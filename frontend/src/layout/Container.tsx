@@ -1,14 +1,12 @@
-import { useLocation } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
-
-import { layout } from "../types/layout";
-import SearchModal from "./SearchModal";
 import { useContext } from "react";
-import { Context } from "../context";
+import { AnimatePresence, motion } from "framer-motion";
+import { LayoutContext } from "../context/LayoutContext";
+import SearchModal from "./SearchModal";
+import { layout } from "../types/layout";
 
 const Container = ({ children, title }: layout) => {
   document.title = title;
-  const { searchModal } = useContext(Context);
+  const { openSearch } = useContext(LayoutContext);
 
   return (
     <>
@@ -22,7 +20,7 @@ const Container = ({ children, title }: layout) => {
         {children}
       </motion.main>
       <AnimatePresence exitBeforeEnter initial={false}>
-        {searchModal && <SearchModal />}
+        {openSearch && <SearchModal />}
       </AnimatePresence>
     </>
   );

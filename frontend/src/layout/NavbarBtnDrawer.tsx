@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { Context } from "../context";
+import { LayoutContext } from "../context/LayoutContext";
 
 const NavbarBtnDrawer = () => {
-  const { menuOpen, setMenuOpen } = useContext(Context);
+  const { menuOpen, setMenuOpen } = useContext(LayoutContext);
   return (
     <div
       className='h-9 w-9 rounded-md flex items-center justify-center z-50 cursor-pointer'

@@ -4,7 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
-import { ContextProvider } from "./context";
+import { UserContextProvider } from "./context/UserContext";
+import { LayoutContextProvider } from "./context/LayoutContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -12,9 +13,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <ContextProvider>
-        <App />
-      </ContextProvider>
+      <UserContextProvider>
+        <LayoutContextProvider>
+          <App />
+        </LayoutContextProvider>
+      </UserContextProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

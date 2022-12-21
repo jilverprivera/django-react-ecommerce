@@ -2,10 +2,10 @@ import { useContext } from "react";
 import { BsSearch } from "react-icons/bs";
 import { MdClose } from "react-icons/md";
 import { motion } from "framer-motion";
-import { Context } from "../context";
+import { LayoutContext } from "../context/LayoutContext";
 
 const SearchModal = () => {
-  const { setSearchModal } = useContext(Context);
+  const { setOpenSearch } = useContext(LayoutContext);
 
   return (
     <motion.div
@@ -17,7 +17,7 @@ const SearchModal = () => {
     >
       <button
         className='w-16 h-16 rounded-full flex items-center justify-center mb-24'
-        onClick={() => setSearchModal(false)}
+        onClick={() => setOpenSearch(false)}
       >
         <span className='text-4xl text-orange-400'>
           <MdClose />
