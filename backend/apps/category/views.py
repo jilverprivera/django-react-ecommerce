@@ -3,45 +3,12 @@ from rest_framework.response import Response
 
 from .models import Category, SubCategory
 from .api.serializer import CategorySerializer, SubCategorySerializer
-from .utils import getCategoriesList, getCategoryDetail, deleteCategory
+from .utils import category_routes, getCategoriesList, getCategoryDetail, deleteCategory, subcategory_routes
 
 
 @api_view(['GET'])
 def categoryRoutes(request):
-    routes = [
-        {
-            'Endpoint': '/',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns an array of categories'
-        },
-        {
-            'Endpoint': '/category/id',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns a single category object'
-        },
-        {
-            'Endpoint': '/category/id/delete/',
-            'method': 'DELETE',
-            'body': None,
-            'description': 'Delete an existing category'
-        },
-        # {
-        #     'Endpoint': '/notes/create/',
-        #     'method': 'POST',
-        #     'body': {'body': ""},
-        #     'description': 'Creates new note with data sent in post request'
-        # },
-        # {
-        #     'Endpoint': '/notes/id/update/',
-        #     'method': 'PUT',
-        #     'body': {'body': ""},
-        #     'description': 'Creates an existing note with data sent in post request'
-        # },
-
-    ]
-    return Response(routes)
+    return Response(category_routes(request))
 
 
 @api_view(['GET'])
@@ -63,6 +30,24 @@ def category(request, pk):
 
     if request.method == 'DELETE':
         return deleteCategory(request, pk)
+
+@api_view(['GET'])
+def subcategoryRoutes(request):
+    return Response(subcategory_routes(request))
+
+@api_view(['GET'])
+def getSubcategories(request, pk):
+    if request.method == 'GET':
+        category = Category.objects.get(id=pk)
+        sub_categories = SubCategory.objects.all().filter(principal=category)
+        print(sub_categories)
+        # serializer = CategorySerializer(category, many=False)
+        serializer = SubCategorySerializer(sub_categories, many=True)
+        # print(serializer)
+
+    # sub_categories = SubCategory.objects.all().filter(
+    #     principal=category_id).order_by('-created_at')
+    return Response(serializer.data)
 
 
 @api_view(['GET'])

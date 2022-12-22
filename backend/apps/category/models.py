@@ -16,7 +16,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
-        ordering = ('-created_at',)
+        ordering = ('created_at',)
 
     def __str__(self):
         return self.name
@@ -37,7 +37,7 @@ class SubCategory(models.Model):
     class Meta:
         verbose_name = 'Sub Category'
         verbose_name_plural = 'Sub Categories'
-        ordering = ('-created_at',)
+        ordering = ('created_at',)
 
     def __str__(self):
         return self.name
