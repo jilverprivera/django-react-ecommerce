@@ -6,16 +6,27 @@ from apps.category.api.serializer import SubCategorySerializer
 
 class CommentSerializer(serializers.ModelSerializer):
     created_at = SerializerMethodField()
-    user = serializers.CharField()
+    user = SerializerMethodField()
+    user_image = SerializerMethodField()
+    username = SerializerMethodField()
 
     class Meta:
         model = Comment
-
-        exclude = [
-            'id', 'updated_at'
-        ]
+        fields = (
+            'username',
+            'user',
+            'user_image',
+            'message',
+            'created_at',
+        )
 
     def get_user(self, obj):
+        return obj.user.email
+
+    def get_user_image(self, obj):
+        return 'http://127.0.0.1:8000' + obj.user.image.url
+
+    def get_username(self, obj):
         return obj.user.first_name
 
     def get_created_at(self, obj):
@@ -39,6 +50,7 @@ class ProductSerializer(ModelSerializer):
             'id',
             'title',
             'slug',
+            'description',
             'category',
             'price',
             'stock',

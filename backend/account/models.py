@@ -1,5 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.core.files import File
+from io import BytesIO
+from PIL import Image
+import os
 
 
 class CustomUserManager(BaseUserManager):
@@ -41,6 +45,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='user/uploads/', blank=True,
+                              null=True, default="user/uploads/default_image.jpeg")
+    thumbnail = models.ImageField(
+        upload_to='user/thumbnail/uploads/', blank=True, null=True)
     # mobile = models.CharField(max_length=64)
     # address = models.CharField(max_length=255)
 
@@ -56,12 +64,38 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'User'
         verbose_name_plural = 'Users'
+        ordering = ('-email',)
+
+    def __str__(self):
+        return self.email
 
     def get_full_name(self):
-        return self.first_name
+        return self.first_name + self.last_name
 
     def get_short_name(self):
         return self.first_name
 
-    def __str__(self):
-        return self.email
+    def get_image(self):
+        if self.image:
+            return 'http://127.0.0.1:8000' + self.image.url
+        return ''
+
+    def get_thumbnail(self):
+        if self.thumbnail:
+            return 'http://127.0.0.1:8000' + self.thumbnail.url
+        else:
+            if self.image:
+                self.thumbnail = self.make_thumbnail(self.image)
+                self.save()
+                return 'http://127.0.0.1:8000' + self.thumbnail.url
+            else:
+                return ''
+
+    def make_thumbnail(self, image, size=(640, 480)):
+        img = Image.open(image)
+        img.convert('RGB')
+        img.thumbnail(size)
+        thumb_io = BytesIO()
+        img.save(thumb_io, 'JPEG', quality=100)
+        thumbnail = File(thumb_io, name=image.name)
+        return thumbnail
