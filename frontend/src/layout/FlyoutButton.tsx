@@ -11,7 +11,7 @@ const FlyoutButton = ({ text }: props) => {
 
   return (
     <button
-      className='mx-3 flex items-center justify-center'
+      className='mr-3 flex items-center justify-center'
       onClick={() => setOpenFlyout(!openFlyout)}
     >
       <span className='mr-1.5'>{text}</span>

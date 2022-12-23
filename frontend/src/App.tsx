@@ -1,7 +1,9 @@
+import { useLocation } from "react-router";
 import Navbar from "./layout/Navbar";
 import AppRouter from "./routes/AppRouter";
 
 const App = () => {
+  const { pathname } = useLocation();
   // useEffect(() => {
   //   const getCategories = async () => {
   //     const response = await fetch("http://127.0.0.1:8000/api/products/");
@@ -14,7 +16,8 @@ const App = () => {
 
   return (
     <>
-      <Navbar />
+      {!pathname.includes("signin") &&
+        (!pathname.includes("signup") && <Navbar />)}
       <main className='w-full'>
         <AppRouter />
       </main>

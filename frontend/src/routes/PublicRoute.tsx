@@ -3,18 +3,16 @@ import { Navigate } from "react-router-dom";
 type Props = {
   component: React.ComponentType;
   path?: string;
-  roles: Array<string>;
+  roles?: Array<string>;
 };
 
 export const PublicRoute = ({ component: RouteComponent }: Props) => {
-  // get from context
-  const isLogged = true;
-  const userHasRequiredRole = true;
-  if (!isLogged && !userHasRequiredRole) {
+  const isLogged = false;
+  if (!isLogged) {
     return <RouteComponent />;
   }
 
-  if (!isLogged && !userHasRequiredRole) {
+  if (!isLogged) {
     return <div>Don't have permissions</div>;
   }
 

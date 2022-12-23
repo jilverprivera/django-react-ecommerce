@@ -19,6 +19,7 @@ export type ProductTypes = {
   id: number;
   title: string;
   slug: string;
+  description: string;
   category: SubCategoryTypes;
   stars: number;
   total_stars: number;
