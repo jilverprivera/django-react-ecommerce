@@ -1,13 +1,13 @@
 from django.db import models
 from io import BytesIO
 from PIL import Image
-import os
 
 from django.core.files import File
 from django.core.validators import MaxValueValidator, MinValueValidator
 from apps.category.models import SubCategory
 
 from account.models import User
+
 
 
 class Product(models.Model):
@@ -108,3 +108,22 @@ class Star(models.Model):
         verbose_name = 'Star'
         verbose_name_plural = 'Stars'
         ordering = ('-user',)
+
+
+class Brands(models.Model):
+    name = models.CharField(max_length=128, null=False, blank=True)
+    slug = models.SlugField(max_length=255, null=False, blank=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True, null=False, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=False, blank=True)
+
+    class Meta:
+        verbose_name = 'Brand'
+        verbose_name_plural = 'Brands'
+        ordering = ('created_at',)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return f'/{self.slug}/'

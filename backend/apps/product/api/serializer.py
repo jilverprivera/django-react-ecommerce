@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework import serializers
-from ..models import Product, Comment
+from ..models import Brands, Product, Comment
 from apps.category.api.serializer import SubCategorySerializer
 
 
@@ -31,6 +31,27 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_created_at(self, obj):
         return obj.created_at.strftime('%d-%m-%Y, %H:%M:%S')
+
+
+class BrandsSerializer(ModelSerializer):
+    created_at = SerializerMethodField()
+    updated_at = SerializerMethodField()
+    slug = serializers.CharField(source='get_absolute_url')
+    class Meta:
+        model = Brands
+        fields = (
+            'id',
+            'name',
+            'slug',
+            'created_at',
+            'updated_at'
+        )
+
+    def get_created_at(self, obj):
+        return obj.created_at.strftime('%d-%m-%Y, %H:%M:%S')
+
+    def get_updated_at(self, obj):
+        return obj.updated_at.strftime('%d-%m-%Y, %H:%M:%S')
 
 
 class ProductSerializer(ModelSerializer):
@@ -71,3 +92,5 @@ class ProductSerializer(ModelSerializer):
 
     def get_updated_at(self, obj):
         return obj.updated_at.strftime('%d-%m-%Y, %H:%M:%S')
+
+
