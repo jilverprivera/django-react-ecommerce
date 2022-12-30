@@ -12,6 +12,14 @@ def categoryRoutes(request):
 
 
 @api_view(['GET'])
+def getLatestCategories(request):
+    if request.method == 'GET':
+        categories = Category.objects.all().order_by('-created_at')[0:4]
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data)
+
+
+@api_view(['GET'])
 def categories(request):
     if request.method == 'GET':
         categories = Category.objects.all().order_by('-created_at')
@@ -21,7 +29,6 @@ def categories(request):
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 def category(request, pk):
-
     if request.method == 'GET':
         return getCategoryDetail(request, pk)
 
@@ -31,9 +38,11 @@ def category(request, pk):
     if request.method == 'DELETE':
         return deleteCategory(request, pk)
 
+
 @api_view(['GET'])
 def subcategoryRoutes(request):
     return Response(subcategory_routes(request))
+
 
 @api_view(['GET'])
 def getSubcategories(request, pk):
