@@ -1,9 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from django.core.files import File
-from io import BytesIO
-from PIL import Image
-import os
 
 
 class CustomUserManager(BaseUserManager):
@@ -47,14 +43,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='user/uploads/', blank=True,
                               null=True, default="user/uploads/default_image.jpeg")
-    thumbnail = models.ImageField(
-        upload_to='user/thumbnail/uploads/', blank=True, null=True)
-    # mobile = models.CharField(max_length=64)
-    # address = models.CharField(max_length=255)
-
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    mobile = models.CharField(max_length=32)
+    address = models.CharField(max_length=128)
+    country = models.CharField(max_length=32)
 
     objects = CustomUserManager()
 
@@ -79,23 +73,3 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.image:
             return 'http://127.0.0.1:8000' + self.image.url
         return ''
-
-    def get_thumbnail(self):
-        if self.thumbnail:
-            return 'http://127.0.0.1:8000' + self.thumbnail.url
-        else:
-            if self.image:
-                self.thumbnail = self.make_thumbnail(self.image)
-                self.save()
-                return 'http://127.0.0.1:8000' + self.thumbnail.url
-            else:
-                return ''
-
-    def make_thumbnail(self, image, size=(640, 480)):
-        img = Image.open(image)
-        img.convert('RGB')
-        img.thumbnail(size)
-        thumb_io = BytesIO()
-        img.save(thumb_io, 'JPEG', quality=100)
-        thumbnail = File(thumb_io, name=image.name)
-        return thumbnail
