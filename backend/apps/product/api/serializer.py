@@ -5,38 +5,41 @@ from apps.category.api.serializer import SubCategorySerializer
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    created_at = SerializerMethodField()
-    user = SerializerMethodField()
+    first_name = SerializerMethodField()
+    full_name = SerializerMethodField()
+    email = SerializerMethodField()
     user_image = SerializerMethodField()
-    username = SerializerMethodField()
 
     class Meta:
         model = Comment
         fields = (
-            'username',
-            'user',
+            'id',
+            'email',
+            'first_name',
+            'full_name',
             'user_image',
-            'message',
             'created_at',
+            'star_number',
+            'message',
         )
 
-    def get_user(self, obj):
+    def get_email(self, obj):
         return obj.user.email
+
+    def get_first_name(self, obj):
+        return obj.user.first_name
+
+    def get_full_name(self, obj):
+        return obj.user.first_name + ' ' + obj.user.last_name
 
     def get_user_image(self, obj):
         return 'http://127.0.0.1:8000' + obj.user.image.url
 
-    def get_username(self, obj):
-        return obj.user.first_name
-
-    def get_created_at(self, obj):
-        return obj.created_at.strftime('%d-%m-%Y, %H:%M:%S')
-
 
 class BrandsSerializer(ModelSerializer):
     created_at = SerializerMethodField()
-    updated_at = SerializerMethodField()
     slug = serializers.CharField(source='get_absolute_url')
+
     class Meta:
         model = Brands
         fields = (
@@ -44,14 +47,10 @@ class BrandsSerializer(ModelSerializer):
             'name',
             'slug',
             'created_at',
-            'updated_at'
         )
 
     def get_created_at(self, obj):
         return obj.created_at.strftime('%d-%m-%Y, %H:%M:%S')
-
-    def get_updated_at(self, obj):
-        return obj.updated_at.strftime('%d-%m-%Y, %H:%M:%S')
 
 
 class ProductSerializer(ModelSerializer):
@@ -61,36 +60,32 @@ class ProductSerializer(ModelSerializer):
     stars = serializers.IntegerField(source='get_stars')
     total_stars = serializers.IntegerField(source='get_number_starts')
     comment = CommentSerializer(many=True)
-    created_at = SerializerMethodField()
-    updated_at = SerializerMethodField()
     category = SubCategorySerializer()
+    brand = BrandsSerializer()
 
     class Meta:
         model = Product
         fields = (
-            'id',
+            'uuid',
             'title',
             'slug',
-            'description',
             'category',
+            'brand',
+            'short_description',
+            'content',
             'price',
+            'compare_price',
             'stock',
             'sold',
-            'status',
-            'best_seller',
-            'stars',
-            'total_stars',
-            'comment',
             'image',
             'thumbnail',
+            'comment',
+            'stars',
+            'total_stars',
+            'best_seller',
+            'status',
             'created_at',
-            'updated_at'
         )
 
-    def get_created_at(self, obj):
-        return obj.created_at.strftime('%d-%m-%Y, %H:%M:%S')
-
-    def get_updated_at(self, obj):
-        return obj.updated_at.strftime('%d-%m-%Y, %H:%M:%S')
-
-
+    # def get_created_at(self, obj):
+    #     return obj.created_at.strftime('%d-%m-%Y') #%H:%M:%S

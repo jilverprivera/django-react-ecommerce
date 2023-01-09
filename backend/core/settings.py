@@ -1,13 +1,21 @@
 from pathlib import Path
 from datetime import timedelta
+import os
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'iciqweur=hp(xnyau)ev9d0@t)4orp)js8=t8qayvib05if0+3'
+SECRET_KEY = env.get_value('SECRET_KEY')
+# SECRET_KEY = env('DJANGO_SECRET_KEY')
+
+# print(env('DJANGO_SECRET_KEY'))
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -23,13 +31,13 @@ THIRD_PARTY_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
-    'djoser'
+    'djoser',
+    'storages',
 ]
 
 PROJECT_APPS = [
     'account',
-    'apps.cart',
-    'apps.wishlist',
+    'apps.user',
     'apps.category',
     'apps.product',
 ]
@@ -86,12 +94,6 @@ DATABASES = {
 #     }
 # }
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'jilverrivera1@gmail.com'
-EMAIL_HOST_PASSWORD = '996853251147*Jilver'
-EMAIL_USE_TLS = True
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -118,13 +120,34 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
+# AWS SETTINGS CONFIG
+AWS_ACCESS_KEY_ID = env.get_value('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env.get_value('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env.get_value('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+AWS_DEFAULT_ACL = 'public-read'
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+AWS_QUERYSTRING_AUTH = False
+AWS_HEADERS = {
+    'Access-Control-Allow-Origin': '*'
+}
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 STATICFILES_DIRS = [
-    BASE_DIR / '../front/build/static'
+    BASE_DIR / '../frontend/build/static'
 ]
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media/'
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+# MEDIA_ROOT = BASE_DIR / 'media/'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -144,7 +167,6 @@ SIMPLE_JWT = {
     'UPDATE_LAST_LOGIN': False,
 
     'ALGORITHM': 'HS256',
-    # 'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
     'ISSUER': None,

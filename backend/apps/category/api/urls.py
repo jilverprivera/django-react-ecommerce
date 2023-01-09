@@ -1,22 +1,14 @@
 from django.urls import path
-from ..views import *
+from ..views import CategoryListView, LatestCategoriesView, CategoryView, SubCategoriesListView, SubCategoryView, SubCategoryByPrincipalView, SearchSubCategoriesByCategoryView
 
 urlpatterns = [
-    path("category/routes/", categoryRoutes, name='category-routes'),
-    path('categories/', categories, name="categories"), # Get all categories.
-    path('categories/latest/', getLatestCategories, name="latest_categories"), # Get all categories.
+    path('categories/', CategoryListView.as_view()),
+    path('category/<uuid:category_uuid>/', CategoryView.as_view()),
+    path('categories/latest/', LatestCategoriesView.as_view()),
 
-    path('category/<str:pk>/', category, name="category"), # Get category by id.
-    path('category/create/', deleteCategory, name="delete-category"), # Create category.
-    path('category/update/<str:pk>/', deleteCategory, name="delete-category"), # Update category.
-    path('category/delete/<str:pk>/', deleteCategory, name="delete-category"), # Delete category.
-
-    path("sub_category/routes/", subcategoryRoutes, name='category-routes'),
-    path('sub_categories/', subcategories, name="sub-categories"), # Get all sub-categories.
-    path('sub_categories/<str:pk>/', getSubcategories, name="sub-categories"), # Get sub-categories by category id.
-    path('sub_category/<str:pk>/', getSubcategories, name="sub_category"), # Get a single sub-category
-    path('sub_category/create/', getSubcategories, name="sub_category"), # Create sub-category
-    path('sub_category/update/<str:pk>/', getSubcategories, name="sub_category"), # Update sub-category
-    path('sub_category/delete/<str:pk>/', getSubcategories, name="sub_category"), # Delete sub-category
-
+    path('sub-categories/', SubCategoriesListView.as_view()),
+    path('sub-categories/search/<uuid:category_uuid>/', SearchSubCategoriesByCategoryView.as_view()),
+    path('sub-category/<str:pk>/', SubCategoryView.as_view()),
+    path('category/<str:principal>/sub-categories/', SubCategoryByPrincipalView.as_view()),
+    
 ]

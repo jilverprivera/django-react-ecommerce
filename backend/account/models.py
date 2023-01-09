@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
+from helpers.countries import Countries
+
+# from apps.user.models import Cart, Wishlist
+
 
 class CustomUserManager(BaseUserManager):
     def _create_user(self, email, password, first_name, last_name, **extra_fields):
@@ -41,14 +45,19 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='user/uploads/', blank=True,
-                              null=True, default="user/uploads/default_image.jpeg")
+    image = models.ImageField(upload_to='user/', blank=True, null=True, default="user/default_image.jpeg")
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    mobile = models.CharField(max_length=32)
-    address = models.CharField(max_length=128)
-    country = models.CharField(max_length=32)
+
+    address_line_1 = models.CharField(max_length=255, default='', null=True)
+    address_line_2 = models.CharField(max_length=255, default='', null=True)
+    city = models.CharField(max_length=128, default='', null=True)
+    province_region = models.CharField(max_length=128, default='', null=True)
+    zipcode = models.CharField(max_length=32, default='', null=True)
+    phone = models.CharField(max_length=64, default='', null=True)
+    country_region = models.CharField(
+        max_length=64, choices=Countries.choices, default=Countries.Colombia)
 
     objects = CustomUserManager()
 
